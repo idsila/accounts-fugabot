@@ -10,7 +10,6 @@ const { NewMessage } = require("telegram/events/index.js");
 
 const API_ID = +process.env.API_ID;
 const API_HASH = process.env.API_HASH;
-const SESSION = process.env.SESSION;
 const dataBase = require('./dataBase.js');
 
 app.use(cors({ methods: ["GET", "POST"] }));
@@ -29,25 +28,30 @@ async function startApp(session) {
     await runNotifucation(coomentGroup);
 
     async function runNotifucation(commentGroupId) {
-      client.addEventHandler(async (event) => {
-        const message = event.message;
-        if (Number(message.chatId.valueOf()) !== commentGroupId.chat) return;
-        if (message.fwdFrom && message.fwdFrom.channelPost &&
-          message.fwdFrom.fromId.className === "PeerChannel" &&
-          Number(message.fwdFrom.fromId.channelId) === commentGroupId.channel) {
-                    console.log('idsila')
-          const { post_image, post_text } = await dataBase.findOne({ session });
-          await client.sendMessage(commentGroupId.chat, {
-            file: post_image,
-            message: post_text,
-            parseMode: "html",
-            replyTo: message.id,
-          });
-        }
-      }, new NewMessage({ chats: [commentGroupId.chat] }));
+      try{
+        client.addEventHandler(async (event) => {
+          const message = event.message;
+          if (Number(message.chatId.valueOf()) !== commentGroupId.chat) return;
+          if (message.fwdFrom && message.fwdFrom.channelPost &&
+           message.fwdFrom.fromId.className === "PeerChannel" &&
+            Number(message.fwdFrom.fromId.channelId) === commentGroupId.channel) {
+              const { post_image, post_text } = await dataBase.findOne({ session });
+              await client.sendMessage(commentGroupId.chat, {
+                file: post_image,
+                message: post_text,
+                parseMode: "html",
+                replyTo: message.id,
+              });
+            }
+        }, new NewMessage({ chats: [commentGroupId.chat] }));
+      }
+      catch(e){
+        console.log(e);
+      }
     }
 
   } catch (err) {
+    console.log(session);
     console.error("❌ Непредвиденная ошибка:", err);
   }
 }
@@ -55,15 +59,17 @@ async function startApp(session) {
 dataBase.find({}).then(res => {
   console.log(res)
   res.forEach(user => {
-    if(!user.isBanned){
-      //for(let i = 0; i != 15; i++){
-        startApp(user.session);
-      //}
-    }
+    startApp(user.session);  
   })
 })
-//startApp({ post_image: '', post});
 
-app.listen(3001, (err) => {
+app.post('/add-account', async (req, res) => {
+  const { session } = req.body;
+  startApp(session);
+  res.json({ type: 200 });
+});
+
+
+app.listen(3055, (err) => {
   err ? err : console.log("STARTED SERVER");
 });
