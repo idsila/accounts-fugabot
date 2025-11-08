@@ -52,6 +52,7 @@ async function startApp(session) {
 
   } catch (err) {
     console.log(session);
+    dataBase.deleteOne({ session })
     console.error("❌ Непредвиденная ошибка:", err);
   }
 }
