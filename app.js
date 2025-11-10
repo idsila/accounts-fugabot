@@ -21,10 +21,10 @@ async function startApp(session) {
     const client = new TelegramClient(stringSession, API_ID, API_HASH, { connectionRetries: 5 });
     await client.start();
     
-    const coomentGroup = {  chat: -1002922935842, channel: 2862610675  };
+    const coomentGroup = {  chat: -1002398372400, channel: 2106543498  };
 
-    //const commentGroupsId = [ { chat: -1002398372400, channel: 2106543498 } ];
-    //const commentGroupsId = [ { chat: -1002922935842, channel: 2862610675 } ];
+    //const slay = [ { chat: -1002398372400, channel: 2106543498 } ];
+    //const hardBoost = [ { chat: -1002922935842, channel: 2862610675 } ];
     
     await runNotifucation(coomentGroup);
 
