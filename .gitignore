@@ -11,3 +11,5 @@ test.txt
 package-lock.json
 node_modules
 assets
+old.js
+new.js
