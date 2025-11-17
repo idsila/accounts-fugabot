@@ -113,7 +113,7 @@ app.post('/update-post', async (req, res) => {
 
 app.post('/delete-post', async (req, res) => {
   const { hash_post, hash } = req.body;
-  if (USERS[hash]?.[post_editor.id]?.handler) {
+  if (USERS[hash]?.[hash_post]?.handler) {
     await CLIENTS[hash].removeEventHandler(USERS[hash][hash_post].handler, new NewMessage({ chats: [USERS[hash][hash_post].chat] }))
     delete USERS[hash][hash_post];
   }
