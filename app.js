@@ -102,7 +102,7 @@ app.post('/add-post', async (req, res) => {
 app.post('/update-post', async (req, res) => {
   const { post_editor, hash } = req.body;
 
-  await CLIENTS[hash].removeEventHandler(USERS[hash][hash_post].handler, new NewMessage({ chats: [USERS[hash][hash_post].chat] })).then(async (res2) => {
+  await CLIENTS[hash].removeEventHandler(USERS[hash][post_editor.id].handler, new NewMessage({ chats: [USERS[hash][post_editor.id].chat] })).then(async (res2) => {
     console.log(res2);
     USERS[hash][post_editor.id] = post_editor;  
     USERS[hash][post_editor.id].handler = createHandlerMessage(hash, post_editor.id, post_editor.channel, post_editor.chat);
