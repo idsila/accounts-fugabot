@@ -101,9 +101,11 @@ app.post('/add-post', async (req, res) => {
 app.post('/update-post', async (req, res) => {
   const { post_editor, hash } = req.body;
 
-  await CLIENTS[hash].removeEventHandler(USERS[hash][post_editor.id].handler, new NewMessage({ chats: [USERS[hash][post_editor.id].chat] }))
+  if (USERS[hash]?.[post_editor.id]?.handler) {
+    await CLIENTS[hash].removeEventHandler(USERS[hash][post_editor.id].handler, new NewMessage({ chats: [USERS[hash][post_editor.id].chat] }));
+  }
   USERS[hash][post_editor.id] = await post_editor;  
-  USERS[hash][post_editor.id].handler = await createHandlerMessage(hash, post_editor.id, post_editor.channel, post_editor.chat);
+  USERS[hash][post_editor.id].handler =  createHandlerMessage(hash, post_editor.id, post_editor.channel, post_editor.chat);
   await CLIENTS[hash].addEventHandler( USERS[hash][post_editor.id].handler, new NewMessage({ chats: [post_editor.chat] }));
   res.json({ type: 200 });
 });
@@ -111,8 +113,10 @@ app.post('/update-post', async (req, res) => {
 
 app.post('/delete-post', async (req, res) => {
   const { hash_post, hash } = req.body;
-  await CLIENTS[hash].removeEventHandler(USERS[hash][hash_post].handler, new NewMessage({ chats: [USERS[hash][hash_post].chat] }))
-  delete USERS[hash][hash_post];
+  if (USERS[hash]?.[post_editor.id]?.handler) {
+    await CLIENTS[hash].removeEventHandler(USERS[hash][hash_post].handler, new NewMessage({ chats: [USERS[hash][hash_post].chat] }))
+    delete USERS[hash][hash_post];
+  }
   res.json({ type: 200 });
 });
 
