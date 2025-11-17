@@ -101,15 +101,24 @@ app.post('/add-post', async (req, res) => {
 
 app.post('/update-post', async (req, res) => {
   const { post_editor, hash } = req.body;
-  USERS[hash][post_editor.id] = post_editor;
+
+  await CLIENTS[hash].removeEventHandler(USERS[hash][hash_post].handler, new NewMessage({ chats: [USERS[hash][hash_post].chat] })).then(async (res2) => {
+    console.log(res2);
+    USERS[hash][post_editor.id] = post_editor;  
+    USERS[hash][post_editor.id].handler = createHandlerMessage(hash, post_editor.id, post_editor.channel, post_editor.chat);
+    CLIENTS[hash].addEventHandler( USERS[hash][post_editor.id].handler, new NewMessage({ chats: [post_editor.chat] }));
+  });
+
   res.json({ type: 200 });
 });
 
 
 app.post('/delete-post', async (req, res) => {
   const { hash_post, hash } = req.body;
-  CLIENTS[hash].removeEventHandler(USERS[hash][hash_post].handler, new NewMessage({ chats: [USERS[hash][hash_post].chat] }));
-  delete USERS[hash][hash_post]
+  await CLIENTS[hash].removeEventHandler(USERS[hash][hash_post].handler, new NewMessage({ chats: [USERS[hash][hash_post].chat] })).then(async (res2) => {
+    console.log(res2)
+    delete USERS[hash][hash_post];
+  })
   res.json({ type: 200 });
 });
 
