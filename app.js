@@ -10,6 +10,7 @@ const { NewMessage } = require("telegram/events/index.js");
 
 const API_ID = +process.env.API_ID;
 const API_HASH = process.env.API_HASH;
+const ADMIN_ID = process.env.ADMIN_ID;
 const dataBase = require('./dataBase.js');
 
 app.use(cors({ methods: ["GET", "POST"] }));
@@ -70,6 +71,9 @@ async function startApp({ session, hash, posts  }) {
 
 dataBase.find({}).then(res => {
    res.forEach(user => {
+    if(user.id != ADMIN_ID){
+
+    }
     startApp(user) 
   });
 });
